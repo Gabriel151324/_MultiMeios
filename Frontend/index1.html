@@ -10,7 +10,7 @@
   <link rel="shortcut icon" href="https://img.icons8.com/color/48/book.png" type="image/x-icon">
   <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
 
-  <link rel="stylesheet" href="/Frontend/CSS/login.css" />
+  <link rel="stylesheet" href="/_MultiMeios/Frontend/CSS/login.css" />
 
   <title>MultiMeios | Login</title>
 </head>
@@ -32,7 +32,7 @@
             <i class="fas fa-lock"></i>
             <input id="login-password" type="password" placeholder="Password" required />
           </div>
-          <button class="btn solid" type="submit" onclick="entrar()">Entrar</button>
+          <button class="btn solid" type="submit">Entrar</button>
         </form>
       </div>
     </div>
@@ -51,16 +51,18 @@
   </div>
 
   <script>
-    const users = [
-      { username: "admin", password: "1234", role: "admin" },
-      { username: "biblioteca", password: "senha", role: "user" }
-    ];
+    document.getElementById("login-form").addEventListener("submit", function (e) {
+      e.preventDefault(); // impede o reload
 
-    function login(username, password) {
-      const user = users.find(u => u.username === username && u.password === password);
-      return user || null;
-      
-    }
+      var username = document.getElementById("login-username").value;
+      var password = document.getElementById("login-password").value;
+
+      if (username == "admin" && password == "admin") {
+        window.location.href = "/_MultiMeios/Frontend/index2.html";
+      } else {
+        alert("Credenciais inválidas.");
+      }
+    });
   </script>
 
 </body>
