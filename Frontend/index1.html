@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <script src="https://kit.fontawesome.com/64d58efce2.js" crossorigin="anonymous"></script>
+
+  <link rel="shortcut icon" href="https://img.icons8.com/color/48/book.png" type="image/x-icon">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="/Frontend/CSS/login.css" />
+
+  <title>MultiMeios | Login</title>
+</head>
+
+<body>
+  <div class="container">
+    <div class="forms-container">
+      <div class="signin-signup">
+
+        <!-- FORM LOGIN -->
+        <form id="login-form" class="sign-in-form">
+          <h2 class="title">Entrar</h2>
+          <div class="input-field">
+            <i class="fas fa-user"></i>
+            <input id="login-username" type="text" placeholder="Username" required />
+          </div>
+
+          <div class="input-field">
+            <i class="fas fa-lock"></i>
+            <input id="login-password" type="password" placeholder="Password" required />
+          </div>
+          <button class="btn solid" type="submit" onclick="entrar()">Entrar</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="panels-container">
+      <div class="panel left-panel">
+        <div class="content">
+          <h3>Um de Nós ?</h3>
+          <p>
+            Já faz parte da nossa equipe de professores? Então entre e acesse o sistema.
+          </p>
+        </div>
+        <img src="img/log.svg" class="image" alt="" />
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const users = [
+      { username: "admin", password: "1234", role: "admin" },
+      { username: "biblioteca", password: "senha", role: "user" }
+    ];
+
+    function login(username, password) {
+      const user = users.find(u => u.username === username && u.password === password);
+      return user || null;
+      
+    }
+  </script>
+
+</body>
+
+</html>
