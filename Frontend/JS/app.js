@@ -10,18 +10,6 @@ sign_in_btn.addEventListener("click", () => {
   container.classList.remove("sign-up-mode");
 });
 
-function entrar() {
-    const username = document.getElementById("login-username").value;
-    const password = document.getElementById("login-password").value;
-
-    if (username == Gabriel && password == 1234) {
-      // Login OK → redireciona
-      window.location.href = "index2.html";
-    } else {
-      alert("usuário inválido!");
-    }
-  }
-
 // ======== MENU E TROCA DE TELAS ========
 const toggleDropdown = (dropdown, menu, isOpen) => {
   dropdown.classList.toggle("open", isOpen);
