@@ -165,6 +165,7 @@
     let reservas = [];
     let notificacoes = [];
 
+    // Caso vá usar backend APENAS para busca:
     const API = "http://localhost:3000";
 
     // ===== MENU & SIDEBAR =====
@@ -172,50 +173,95 @@
       dropdown.classList.toggle("open", isOpen);
       menu.style.height = isOpen ? `${menu.scrollHeight}px` : 0;
     };
-    const closeAllDropdowns = () => document.querySelectorAll(".dropdown-container.open").forEach(d => toggleDropdown(d, d.querySelector(".dropdown-menu"), false));
-    document.querySelectorAll(".dropdown-toggle").forEach(btn => btn.addEventListener("click", e => {
-      e.preventDefault();
-      const dropdown = btn.closest(".dropdown-container");
-      const menu = dropdown.querySelector(".dropdown-menu");
-      const isOpen = dropdown.classList.contains("open");
-      closeAllDropdowns();
-      toggleDropdown(dropdown, menu, !isOpen);
-    }));
-    document.querySelectorAll(".sidebar-toggler, .sidebar-menu-button").forEach(btn => btn.addEventListener("click", () => {
-      closeAllDropdowns();
-      document.querySelector(".sidebar").classList.toggle("collapsed");
-    }));
-    if (window.innerWidth <= 1024) document.querySelector(".sidebar").classList.add("collapsed");
+
+    const closeAllDropdowns = () =>
+      document.querySelectorAll(".dropdown-container.open")
+        .forEach(d => toggleDropdown(d, d.querySelector(".dropdown-menu"), false));
+
+    document.querySelectorAll(".dropdown-toggle").forEach(btn => {
+      btn.addEventListener("click", e => {
+        e.preventDefault();
+        const dropdown = btn.closest(".dropdown-container");
+        const menu = dropdown.querySelector(".dropdown-menu");
+        const isOpen = dropdown.classList.contains("open");
+
+        closeAllDropdowns();
+        toggleDropdown(dropdown, menu, !isOpen);
+      });
+    });
+
+    document.querySelectorAll(".sidebar-toggler, .sidebar-menu-button")
+      .forEach(btn => btn.addEventListener("click", () => {
+        closeAllDropdowns();
+        document.querySelector(".sidebar").classList.toggle("collapsed");
+      }));
+
+    if (window.innerWidth <= 1024)
+      document.querySelector(".sidebar").classList.add("collapsed");
 
     // ===== TROCA DE TELAS =====
     const sections = document.querySelectorAll("main section");
+
     document.querySelectorAll("[data-target]").forEach(link => {
       link.addEventListener("click", e => {
         e.preventDefault();
         const target = link.dataset.target;
+
         sections.forEach(sec => sec.classList.remove("active"));
         document.getElementById(target).classList.add("active");
+
         atualizarListas();
       });
     });
 
-    // ===== FUNÇÕES DE ATUALIZAÇÃO =====
-    async function listarLivros() {
-      const res = await fetch(`${API}/livros`);
-      livros = await res.json();
-      const html = livros.length ? livros.map(l => `<li><span><strong>${l.titulo}</strong> — ${l.autor} (${l.categoria})</span><button class="delete-btn" onclick="removerLivro(${l.id})">Excluir</button></li>`).join("") : "<li>Nenhum livro cadastrado ainda.</li>";
-      document.getElementById("listaLivrosCadastro").innerHTML = html;
-      document.getElementById("listaLivrosPainel").innerHTML = html;
-      atualizarDashboard();
+    // ===== FUNÇÕES CSV (Livros) =====
+    async function carregarLivrosCSV() {
+      const resp = await fetch("/data/livros.csv");
+      const texto = await resp.text();
+
+      livros = texto
+        .split("\n")
+        .slice(1)
+        .map(l => l.split(","))
+        .filter(c => c.length >= 6)
+        .map(c => ({
+          titulo: c[0],
+          autor: c[1],
+          ano: c[2],
+          isbn: c[3],
+          categoria: c[4],
+          quantidade: c[5]
+        }));
+
+      atualizarListas();
     }
 
-    async function listarReservas() {
-      const res = await fetch(`${API}/reservas`);
-      reservas = await res.json();
-      const html = reservas.length ? reservas.map(r => `<li><span><strong>${r.livro}</strong> por ${r.aluno} em ${new Date(r.data).toLocaleDateString()}</span><button class="delete-btn" onclick="removerReserva(${r.id})">Cancelar</button></li>`).join("") : "<li>Nenhuma reserva ainda.</li>";
+    // ===== LISTAGENS =====
+    function listarLivrosFront() {
+      const html = livros.length
+        ? livros.map(l =>
+          `<li>
+            <span><strong>${l.titulo}</strong> — ${l.autor} (${l.categoria})</span>
+          </li>`
+        ).join("")
+        : "<li>Nenhum livro cadastrado ainda.</li>";
+
+      document.getElementById("listaLivrosCadastro").innerHTML = html;
+      document.getElementById("listaLivrosPainel").innerHTML = html;
+    }
+
+    function listarReservasFront() {
+      const html = reservas.length
+        ? reservas.map((r, i) =>
+          `<li>
+            <span><strong>${r.livro}</strong> por ${r.aluno} em ${new Date(r.data).toLocaleDateString()}</span>
+            <button class="delete-btn" onclick="removerReserva(${i})">Cancelar</button>
+          </li>`
+        ).join("")
+        : "<li>Nenhuma reserva ainda.</li>";
+
       document.getElementById("listaReservasSecao").innerHTML = html;
       document.getElementById("listaReservasPainel").innerHTML = html;
-      atualizarDashboard();
     }
 
     function atualizarDashboard() {
@@ -225,66 +271,62 @@
     }
 
     function atualizarListas() {
-      listarLivros();
-      listarReservas();
+      listarLivrosFront();
+      listarReservasFront();
+      atualizarDashboard();
+
       const container = document.getElementById("notificacoesContainer");
-      container.innerHTML = notificacoes.map(msg => `<div class="notify">${msg}</div>`).join("");
+      container.innerHTML = notificacoes.map(msg =>
+        `<div class="notify">${msg}</div>`
+      ).join("");
     }
 
+    // ===== NOTIFICAÇÕES =====
     function notificacao(msg) {
       notificacoes.unshift(msg);
       atualizarListas();
     }
 
     // ===== FUNÇÕES CRUD =====
-    async function cadastrarLivro(e) {
+    function reservarLivro(e) {
       e.preventDefault();
-      const titulo = document.getElementById("tituloLivro").value.trim();
-      const autor = document.getElementById("autorLivro").value.trim();
-      const categoria = document.getElementById("categoriaLivro").value;
-      if (!titulo || !autor || !categoria) return alert("Preencha todos os campos!");
-      await fetch(`${API}/livros`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ titulo, autor, categoria }) });
-      notificacao(`📘 Novo livro "${titulo}" cadastrado.`);
-      e.target.reset();
-      listarLivros();
-    }
 
-    async function reservarLivro(e) {
-      e.preventDefault();
       const aluno = document.getElementById("nomeAlunoRes").value.trim();
       const livro = document.getElementById("tituloReservaRes").value.trim();
       const data = document.getElementById("dataReservaRes").value;
-      if (!aluno || !livro || !data) return alert("Preencha todos os campos!");
-      await fetch(`${API}/reservas`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ aluno, livro, data }) });
+
+      if (!aluno || !livro || !data)
+        return alert("Preencha todos os campos!");
+
+      reservas.push({ aluno, livro, data });
       notificacao(`📌 ${aluno} reservou o livro "${livro}".`);
+
       e.target.reset();
-      listarReservas();
+      atualizarListas();
     }
 
-    async function alugarLivro(e) {
+    function alugarLivro(e) {
       e.preventDefault();
+
       const aluno = document.getElementById("nomeAlunoAlugar").value.trim();
       const livro = document.getElementById("tituloReservaAlugar").value.trim();
       const data = document.getElementById("dataReservaAlugar").value;
-      if (!aluno || !livro || !data) return alert("Preencha todos os campos!");
-      await fetch(`${API}/reservas`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ aluno, livro, data }) });
+
+      if (!aluno || !livro || !data)
+        return alert("Preencha todos os campos!");
+
+      reservas.push({ aluno, livro, data });
       notificacao(`📅 ${aluno} alugou o livro "${livro}".`);
+
       e.target.reset();
-      listarReservas();
+      atualizarListas();
     }
 
-    async function removerLivro(id) {
-      if (!confirm("Excluir este livro?")) return;
-      await fetch(`${API}/livros/${id}`, { method: "DELETE" });
-      notificacao(`❌ Livro removido.`);
-      listarLivros();
-    }
-
-    async function removerReserva(id) {
+    function removerReserva(i) {
       if (!confirm("Cancelar esta reserva?")) return;
-      await fetch(`${API}/reservas/${id}`, { method: "DELETE" });
+      reservas.splice(i, 1);
       notificacao(`❌ Reserva cancelada.`);
-      listarReservas();
+      atualizarListas();
     }
 
     // ===== BUSCAR LIVROS =====
@@ -308,24 +350,28 @@
         : "<li>❌ Nenhum livro encontrado.</li>";
     }
 
-
-    // ===== EVENTOS DE FORMULÁRIO =====
-    document.getElementById("formCadastro").addEventListener("submit", cadastrarLivro);
+    // ===== FORMULÁRIOS =====
     document.getElementById("formReservar").addEventListener("submit", reservarLivro);
     document.getElementById("formAlugar").addEventListener("submit", alugarLivro);
 
     // ===== DARK MODE =====
     const darkToggle = document.getElementById("modoEscuro");
     darkToggle.checked = localStorage.getItem("darkMode") === "true";
+
     if (darkToggle.checked) document.body.classList.add("dark");
+
     darkToggle.addEventListener("change", e => {
       document.body.classList.toggle("dark", e.target.checked);
       localStorage.setItem("darkMode", e.target.checked);
     });
 
-    // ===== EXPORT & IMPORT =====
+    // ===== EXPORTAR/IMPORTAR =====
     document.getElementById("exportar").addEventListener("click", () => {
-      const blob = new Blob([JSON.stringify({ livros, reservas, notificacoes })], { type: "application/json" });
+      const blob = new Blob(
+        [JSON.stringify({ livros, reservas, notificacoes })],
+        { type: "application/json" }
+      );
+
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
@@ -336,9 +382,11 @@
 
     const importarArquivo = document.getElementById("importarArquivo");
     document.getElementById("importar").addEventListener("click", () => importarArquivo.click());
+
     importarArquivo.addEventListener("change", e => {
       const file = e.target.files[0];
       if (!file) return;
+
       const reader = new FileReader();
       reader.onload = e => {
         try {
@@ -346,29 +394,31 @@
           livros = dados.livros || [];
           reservas = dados.reservas || [];
           notificacoes = dados.notificacoes || [];
+
           atualizarListas();
           alert("Backup importado com sucesso!");
         } catch {
           alert("Erro ao importar backup!");
         }
       };
+
       reader.readAsText(file);
     });
 
     // ===== LIMPAR TUDO =====
     document.getElementById("limparTudo").addEventListener("click", () => {
-      if (confirm("Tem certeza que deseja limpar todos os dados?")) {
-        livros = [];
-        reservas = [];
-        notificacoes = [];
-        atualizarListas();
-        alert("Todos os dados foram limpos!");
-      }
+      if (!confirm("Tem certeza que deseja limpar todos os dados?")) return;
+
+      livros = [];
+      reservas = [];
+      notificacoes = [];
+
+      atualizarListas();
+      alert("Todos os dados foram limpos!");
     });
 
-    // ===== INICIALIZAÇÃO =====
-    listarLivros();
-    listarReservas();
+    // ===== INITIAL LOAD =====
+    carregarLivrosCSV();
   </script>
 </body>
 
