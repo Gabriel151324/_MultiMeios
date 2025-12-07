@@ -52,6 +52,7 @@
     <section id="painel" class="active">
       <h2 id="tituloPainel">📊 Painel Principal</h2>
       <div class="card">Bem-vindo ao sistema MultiMeios!</div>
+
       <div class="cards-dashboard">
         <div class="card">
           <h3>Total de Livros</h3>
@@ -66,6 +67,14 @@
           <p id="totalNotificacoesDashboard">0</p>
         </div>
       </div>
+
+      <div class="listagem">
+        <h3>🔎 Buscar livros</h3>
+        <input id="buscarLivroInput" placeholder="Digite título, autor ou categoria" oninput="buscarLivroInput()" />
+        <h3>📘 Livros</h3>
+        <ul id="listaLivrosPainel"></ul>
+      </div>
+
       <div class="listagem">
         <h3>📅 Reservas</h3>
         <ul id="listaReservasPainel"></ul>
@@ -75,10 +84,12 @@
     <!-- CADASTRAR LIVRO -->
     <section id="cad-livro">
       <h2>📚 Cadastrar Livro</h2>
-      <form id="formCadastro">
-        <input type="text" id="tituloLivro" placeholder="Título do Livro" required>
-        <input type="text" id="autorLivro" placeholder="Autor" required>
-        <select id="categoriaLivro" required>
+      <form id="formCadastro" onsubmit="return false;">
+        <input type="text" id="titulo" placeholder="Título do Livro" required />
+        <input type="text" id="autor" placeholder="Autor" required />
+        <input type="text" id="ano" placeholder="Ano (opcional)" />
+        <input type="text" id="isbn" placeholder="ISBN (opcional)" />
+        <select id="categoria" required>
           <option value="">Selecione a Categoria</option>
           <option>Romance</option>
           <option>Ficção</option>
@@ -100,8 +111,11 @@
           <option>Artes / Design</option>
           <option>Esportes</option>
         </select>
-        <button type="submit">Salvar Livro</button>
+
+        <!-- botão com type="button" pra não submeter o form e chamar a função JS -->
+        <button type="button" onclick="adicionarLivro()">Salvar Livro</button>
       </form>
+
       <div class="listagem">
         <h3>📘 Livros Cadastrados</h3>
         <ul id="listaLivrosCadastro"></ul>
@@ -112,11 +126,12 @@
     <section id="alugar-livro">
       <h2>📅 Alugar Livro</h2>
       <form id="formAlugar">
-        <input type="text" id="nomeAlunoAlugar" placeholder="Nome do Aluno" required>
-        <input type="text" id="tituloReservaAlugar" placeholder="Título do Livro" required>
-        <input type="date" id="dataReservaAlugar" required>
+        <input type="text" id="nomeAlunoAlugar" placeholder="Nome do Aluno" required />
+        <input type="text" id="tituloReservaAlugar" placeholder="Título do Livro" required />
+        <input type="date" id="dataReservaAlugar" required />
         <button type="submit">Alugar</button>
       </form>
+
       <div class="listagem">
         <h3>👥 Alugados</h3>
         <ul id="listaAluguelSecao"></ul>
@@ -127,11 +142,12 @@
     <section id="res-livro">
       <h2>📅 Reservar Livro</h2>
       <form id="formReservar">
-        <input type="text" id="nomeAlunoRes" placeholder="Nome do Aluno" required>
-        <input type="text" id="tituloReservaRes" placeholder="Título do Livro" required>
-        <input type="date" id="dataReservaRes" required>
+        <input type="text" id="nomeAlunoRes" placeholder="Nome do Aluno" required />
+        <input type="text" id="tituloReservaRes" placeholder="Título do Livro" required />
+        <input type="date" id="dataReservaRes" required />
         <button type="submit">Reservar</button>
       </form>
+
       <div class="listagem">
         <h3>👥 Reservas Feitas</h3>
         <ul id="listaReservasSecao"></ul>
@@ -150,11 +166,14 @@
       <div class="card">
         <label>🏛️ Nome da Biblioteca</label>
         <input type="text" id="nomeBiblioteca" placeholder="Ex: MultiMeios Miguel Gurgel" />
-        <label><input type="checkbox" id="modoEscuro"> Ativar modo escuro</label>
-        <button id="exportar">📤 Exportar Backup</button>
-        <input type="file" id="importarArquivo" accept=".json" hidden />
-        <button id="importar">📥 Importar Backup</button>
-        <button id="limparTudo">🧹 Limpar todos os dados</button>
+        <label><input type="checkbox" id="modoEscuro" /> Ativar modo escuro</label>
+
+        <div>
+          <button id="exportar" type="button">📤 Exportar Backup</button>
+          <input type="file" id="importarArquivo" accept=".json" hidden />
+          <button id="importar" type="button">📥 Importar Backup</button>
+          <button id="limparTudo" type="button">🧹 Limpar todos os dados</button>
+        </div>
       </div>
     </section>
   </main>
@@ -164,9 +183,6 @@
     let livros = [];
     let reservas = [];
     let notificacoes = [];
-
-    // Caso vá usar backend APENAS para busca:
-    const API = "http://localhost:3000";
 
     // ===== MENU & SIDEBAR =====
     const toggleDropdown = (dropdown, menu, isOpen) => {
@@ -216,33 +232,35 @@
 
     // ===== FUNÇÕES CSV (Livros) =====
     async function carregarLivrosCSV() {
-      const resp = await fetch("/data/livros.csv");
-      const texto = await resp.text();
+      try {
+        const resp = await fetch("/_MultiMeios/Backend/livros.csv");
+        const texto = await resp.text();
 
-      livros = texto
-        .split("\n")
-        .slice(1)
-        .map(l => l.split(","))
-        .filter(c => c.length >= 6)
-        .map(c => ({
-          titulo: c[0],
-          autor: c[1],
-          ano: c[2],
-          isbn: c[3],
-          categoria: c[4],
-          quantidade: c[5]
-        }));
+        livros = texto
+          .split("\n")
+          .slice(1)
+          .map(l => l.split(","))
+          .filter(c => c.length >= 6)
+          .map(c => ({
+            titulo: c[0],
+            autor: c[1],
+            ano: c[2],
+            isbn: c[3],
+            categoria: c[4],
+            quantidade: c[5]
+          }));
 
-      atualizarListas();
+        atualizarListas();
+      } catch (e) {
+        console.error("Erro ao carregar CSV:", e);
+      }
     }
 
     // ===== LISTAGENS =====
     function listarLivrosFront() {
       const html = livros.length
         ? livros.map(l =>
-          `<li>
-            <span><strong>${l.titulo}</strong> — ${l.autor} (${l.categoria})</span>
-          </li>`
+          `<li><strong>${l.titulo}</strong> — ${l.autor} (${l.categoria})</li>`
         ).join("")
         : "<li>Nenhum livro cadastrado ainda.</li>";
 
@@ -254,9 +272,9 @@
       const html = reservas.length
         ? reservas.map((r, i) =>
           `<li>
-            <span><strong>${r.livro}</strong> por ${r.aluno} em ${new Date(r.data).toLocaleDateString()}</span>
-            <button class="delete-btn" onclick="removerReserva(${i})">Cancelar</button>
-          </li>`
+          <span><strong>${r.livro}</strong> por ${r.aluno} em ${new Date(r.data).toLocaleDateString()}</span>
+          <button class="delete-btn" onclick="removerReserva(${i})">Cancelar</button>
+        </li>`
         ).join("")
         : "<li>Nenhuma reserva ainda.</li>";
 
@@ -281,13 +299,51 @@
       ).join("");
     }
 
+    // ===== BACKEND (opcional) =====
+    async function carregarLivros() {
+      const res = await fetch("http://localhost:3000/livros");
+      livros = await res.json();
+      mostrarLivros(livros);
+    }
+
+    function mostrarLivros(lista) {
+      const div = document.getElementById("lista-livros");
+      div.innerHTML = "";
+
+      lista.forEach(l => {
+        div.innerHTML += `
+        <div class="livro-item">
+          <strong>${l.titulo}</strong><br>
+          Autor: ${l.autor}<br>
+          Ano: ${l.ano}
+        </div>
+        <hr>
+        `;
+      });
+    }
+
+    async function adicionarLivro() {
+      const titulo = document.getElementById("titulo").value;
+      const autor = document.getElementById("autor").value;
+      const ano = document.getElementById("ano").value;
+
+      const res = await fetch("http://localhost:3000/livros", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ titulo, autor, ano })
+      });
+
+      livros = await res.json();
+      mostrarLivros(livros);
+    }
+
     // ===== NOTIFICAÇÕES =====
     function notificacao(msg) {
       notificacoes.unshift(msg);
       atualizarListas();
     }
 
-    // ===== FUNÇÕES CRUD =====
+    // ===== RESERVAR =====
     function reservarLivro(e) {
       e.preventDefault();
 
@@ -305,6 +361,7 @@
       atualizarListas();
     }
 
+    // ===== ALUGAR =====
     function alugarLivro(e) {
       e.preventDefault();
 
@@ -325,11 +382,11 @@
     function removerReserva(i) {
       if (!confirm("Cancelar esta reserva?")) return;
       reservas.splice(i, 1);
-      notificacao(`❌ Reserva cancelada.`);
+      notificacao("❌ Reserva cancelada.");
       atualizarListas();
     }
 
-    // ===== BUSCAR LIVROS =====
+    // ===== BUSCAR =====
     function buscarLivroInput() {
       const termo = document.getElementById("buscarLivroInput").value.trim().toLowerCase();
       const lista = document.getElementById("listaLivrosPainel");
@@ -365,7 +422,7 @@
       localStorage.setItem("darkMode", e.target.checked);
     });
 
-    // ===== EXPORTAR/IMPORTAR =====
+    // ===== EXPORTAR =====
     document.getElementById("exportar").addEventListener("click", () => {
       const blob = new Blob(
         [JSON.stringify({ livros, reservas, notificacoes })],
@@ -380,6 +437,7 @@
       URL.revokeObjectURL(url);
     });
 
+    // ===== IMPORTAR =====
     const importarArquivo = document.getElementById("importarArquivo");
     document.getElementById("importar").addEventListener("click", () => importarArquivo.click());
 
@@ -405,7 +463,7 @@
       reader.readAsText(file);
     });
 
-    // ===== LIMPAR TUDO =====
+    // ===== LIMPAR =====
     document.getElementById("limparTudo").addEventListener("click", () => {
       if (!confirm("Tem certeza que deseja limpar todos os dados?")) return;
 
@@ -418,7 +476,7 @@
     });
 
     // ===== INITIAL LOAD =====
-    carregarLivrosCSV();
+    carregarLivrosCSV();  // só CSV inicial
   </script>
 </body>
 
