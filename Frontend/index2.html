@@ -126,15 +126,23 @@
     <!-- ALUGAR LIVRO -->
     <section id="alugar-livro">
       <h2>📅 Alugar Livro</h2>
+
       <form id="formAlugar">
-        <input type="text" id="nomeAlunoAlugar" placeholder="Nome do Aluno" required />
-        <input type="text" id="tituloReservaAlugar" placeholder="Título do Livro" required />
-        <input type="date" id="dataReservaAlugar" required />
-        <button type="submit">Alugar</button>
+        <input type="text" id="nomeAlunoAlugar" placeholder="Nome do Aluno" required>
+
+        <input type="text" id="tituloReservaAlugar" placeholder="Título do Livro" required>
+
+        <label for="dataAluguel">Data do Aluguel:</label>
+        <input type="date" id="dataReservaAlugar" required>
+
+        <label for="dataDevolucao">Data da Devolução:</label>
+        <input type="date" id="dataDevolucaoAlugar" required>
+
+        <button type="submit">Registrar Aluguel</button>
       </form>
 
       <div class="listagem">
-        <h3>👥 Alugados</h3>
+        <h3>📚 Aluguéis Registrados</h3>
         <ul id="listaAluguelSecao"></ul>
       </div>
     </section>
