@@ -589,3 +589,15 @@ body.dark .grafico-container {
 body.dark .grafico-container h3 {
        color: #fff;
 }
+
+.verMais {
+       background-color: #006f20;
+       color: white;
+       border: none;
+       padding: 10px 20px;
+       border-radius: 8px;
+       cursor: pointer;
+       font-size: 1rem;
+       transition: background-color 0.3s ease;
+       margin-top: 10px;
+}

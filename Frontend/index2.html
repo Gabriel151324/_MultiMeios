@@ -73,6 +73,7 @@
         <input id="buscarLivroInput" placeholder="Digite título, autor ou categoria" oninput="buscarLivroInput()" />
         <h3>📘 Livros</h3>
         <ul id="listaLivrosPainel"></ul>
+        <button id="verMaisBtn" class="verMais" onclick="mostrarMaisLivros()">Ver mais</button>
       </div>
 
       <div class="listagem">
@@ -257,15 +258,46 @@
     }
 
     // ===== LISTAGENS =====
-    function listarLivrosFront() {
-      const html = livros.length
-        ? livros.map(l =>
-          `<li><strong>${l.titulo}</strong> — ${l.autor} (${l.categoria})</li>`
-        ).join("")
-        : "<li>Nenhum livro cadastrado ainda.</li>";
+    let qtdVisivel = 5; // quantos livros aparecem por vez
 
-      document.getElementById("listaLivrosCadastro").innerHTML = html;
-      document.getElementById("listaLivrosPainel").innerHTML = html;
+    function listarLivrosFront() {
+      const listaPainel = document.getElementById("listaLivrosPainel");
+      const listaCadastro = document.getElementById("listaLivrosCadastro");
+      const btnVerMais = document.getElementById("verMaisBtn");
+
+      if (!livros.length) {
+        listaCadastro.innerHTML = "<li>Nenhum livro cadastrado ainda.</li>";
+        listaPainel.innerHTML = "<li>Nenhum livro cadastrado ainda.</li>";
+        btnVerMais.style.display = "none";
+        return;
+      }
+
+      // 🔥 Só os visíveis
+      const visiveis = livros.slice(0, qtdVisivel);
+
+      const htmlVisivel = visiveis
+        .map(l => `<li><strong>${l.titulo}</strong> — ${l.autor} (${l.categoria})</li>`)
+        .join("");
+
+      // Cadastro sempre mostra tudo
+      const htmlCadastro = livros
+        .map(l => `<li><strong>${l.titulo}</strong> — ${l.autor} (${l.categoria})</li>`)
+        .join("");
+
+      listaCadastro.innerHTML = htmlCadastro;
+      listaPainel.innerHTML = htmlVisivel;
+
+      // Se ainda tem livro escondido → mostra botão
+      if (qtdVisivel < livros.length) {
+        btnVerMais.style.display = "block";
+      } else {
+        btnVerMais.style.display = "none";
+      }
+    }
+
+    function mostrarMaisLivros() {
+      qtdVisivel += 5; // adiciona +5 livros
+      listarLivrosFront();
     }
 
     function listarReservasFront() {
@@ -289,14 +321,17 @@
     }
 
     function atualizarListas() {
+      // resetar quantidade visível ao atualizar
+      qtdVisivel = 5;
+
       listarLivrosFront();
       listarReservasFront();
       atualizarDashboard();
 
       const container = document.getElementById("notificacoesContainer");
-      container.innerHTML = notificacoes.map(msg =>
-        `<div class="notify">${msg}</div>`
-      ).join("");
+      container.innerHTML = notificacoes
+        .map(msg => `<div class="notify">${msg}</div>`)
+        .join("");
     }
 
     // ===== BACKEND (opcional) =====
