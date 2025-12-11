@@ -312,7 +312,7 @@
       const html = reservas.length
         ? reservas.map((r, i) =>
           `<li>
-          <span><strong>${r.livro}</strong> por ${r.aluno} em ${new Date(r.data).toLocaleDateString()}</span>
+          <span><strong>${r.livro}</strong> alugado por ${r.aluno} em ${new Date(r.data).toLocaleDateString()}</span>
           <button class="delete-btn" onclick="removerReserva(${i})">Cancelar</button>
         </li>`
         ).join("")
