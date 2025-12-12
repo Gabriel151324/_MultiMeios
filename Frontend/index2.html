@@ -256,6 +256,28 @@
       }
     }
 
+    document.getElementById("btnBuscar").addEventListener("click", async () => {
+      const nome = document.getElementById("campoBusca").value.trim();
+
+      const r = await fetch(`http://localhost:3000/buscar?nome=${nome}`);
+      const data = await r.json();
+
+      const html = data.livros.length
+        ? data.livros.map(l => `
+        <li>
+          <strong>${l.livro}</strong><br>
+          Autor: ${l.autor}<br>
+          Estante: ${l.estante} | Volume: ${l.volume} | Exemplar: ${l.exemplar}<br>
+          Cidade: ${l.cidade} | Editora: ${l.editora}<br>
+          Ano: ${l.ano} | Origem: ${l.origem}<br>
+          Código: ${l.codigo} | Data: ${l.data}
+        </li>
+      `).join("")
+        : "<li>Nenhum livro encontrado.</li>";
+
+      document.getElementById("resultadoLivros").innerHTML = html;
+    });
+
     // ===== LISTAGENS =====
     function listarLivrosFront() {
       const html = livros.length
