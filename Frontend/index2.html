@@ -70,7 +70,8 @@
 
       <div class="listagem">
         <h3>🔎 Buscar livros</h3>
-        <input id="buscarLivroInput" placeholder="Digite título, autor ou categoria" oninput="buscarLivroInput()" />
+        <input id="buscarLivroInput" placeholder="Digite o id do livro" />
+        <button type="button" onclick="buscarLivroPorId()">🔍 Buscar por ID</button>
         <h3>📘 Livros</h3>
         <ul id="listaLivrosPainel"></ul>
         <button id="verMaisBtn" class="verMais" onclick="mostrarMaisLivros()">Ver mais</button>
@@ -468,25 +469,53 @@
     }
 
     // ===== BUSCAR =====
-    function buscarLivroInput() {
-      const termo = document.getElementById("buscarLivroInput").value.trim().toLowerCase();
-      const lista = document.getElementById("listaLivrosPainel");
+    async function buscarLivroPorId() {
+  // Obtemos o ID 
+  const ID = document.getElementById("buscarLivroInput").value;
 
-      if (termo === "") {
-        lista.innerHTML = "<li>Digite algo para buscar.</li>";
-        return;
+  // Validação simples: se o ID estiver vazio, não fazemos a requisição
+  if (!ID) {
+    alert("Por favor, digite um ID para procurar.");
+    return;
+  }
+
+  try {
+    // Fazemos o GET. O URL agora inclui o ID dinamicamente
+    const res = await fetch(`https://api-multimeios.onrender.com/livro/get/${ID}`, {
+      method: "GET", 
+      headers: {
+        "Accept": "application/json"
       }
+    });
 
-      const encontrados = livros.filter(l =>
-        l.titulo.toLowerCase().includes(termo) ||
-        l.autor.toLowerCase().includes(termo) ||
-        l.categoria.toLowerCase().includes(termo)
-      );
-
-      lista.innerHTML = encontrados.length
-        ? encontrados.map(l => `<li>${l.titulo} — ${l.autor}</li>`).join("")
-        : "<li>❌ Nenhum livro encontrado.</li>";
+    // Verificamos se o livro foi encontrado
+    if (res.ok) {
+      const livro = await res.json();
+      console.log("Livro encontrado:", livro);
+      
+      // Chamamos uma função para preencher os campos do formulário com os dados
+      preencherFormulario(livro);
+      
+    } else if (res.status === 404) {
+      alert("Livro não encontrado!");
+    } else {
+      throw new Error("Erro ao procurar o livro.");
     }
+
+  } catch (error) {
+    console.error("Erro na requisição GET:", error);
+    alert("Erro ao conectar com o servidor Flask. Verifique se o CORS está ativo!");
+  }
+}
+
+// Função auxiliar para colocar os dados de volta nos inputs
+function preencherFormulario(dados) {
+  // Ajusta os nomes das chaves (LIVRO, AUTOR) conforme a resposta da tua API
+  document.getElementById("livro").value = dados.LIVRO || "";
+  document.getElementById("autor").value = dados.AUTOR || "";
+  document.getElementById("ano").value = dados.ANO || "";
+  // Adiciona os outros campos conforme necessário...
+}
 
     // ===== FORMULÁRIOS =====
     document.getElementById("formReservar").addEventListener("submit", reservarLivro);
