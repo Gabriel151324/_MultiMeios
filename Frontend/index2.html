@@ -83,35 +83,27 @@
     </section>
 
     <!-- CADASTRAR LIVRO -->
-    <section id="cad-livro">
+    <section id="cad-livro" class="cadastro">
       <h2>📚 Cadastrar Livro</h2>
       <form id="formCadastro" onsubmit="return false;">
-        <input type="text" id="titulo" placeholder="Título do Livro" required />
-        <input type="text" id="autor" placeholder="Autor" required />
-        <input type="text" id="ano" placeholder="Ano (opcional)" />
-        <input type="text" id="isbn" placeholder="ISBN (opcional)" />
-        <select id="categoria" required>
-          <option value="">Selecione a Categoria</option>
-          <option>Romance</option>
-          <option>Ficção</option>
-          <option>Terror</option>
-          <option>Fantasia</option>
-          <option>Aventura</option>
-          <option>Suspense/Thriller</option>
-          <option>Ficção Científica</option>
-          <option>Educação</option>
-          <option>História</option>
-          <option>Biografia</option>
-          <option>Autoajuda</option>
-          <option>Ciências</option>
-          <option>Filosofia</option>
-          <option>Tecnologia / Informática</option>
-          <option>Poesia</option>
-          <option>Infantil / Juvenil</option>
-          <option>Quadrinhos / Mangá</option>
-          <option>Artes / Design</option>
-          <option>Esportes</option>
+        <input type="text" id="AdaptadoPor" placeholder="Adaptado por" required />
+        <select name="categoria" id="alugado" >
+          <option value="">Alugado?</option>
+          <option>Sim</option>
+          <option>Não</option>
         </select>
+        <input type="text" id="ano" placeholder="Ano" required />
+        <input type="text" id="autor" placeholder="Autor" required />
+        <input type="text" id="cidade" placeholder="Cidade" />
+        <input type="text" id="codigo" placeholder="Código" />
+        <input type="text" id="dados" placeholder="aaaa/aa/aa" />
+        <input type="text" id="editora" placeholder="Editora" />
+        <input type="text" id="estante" placeholder="Estante" />
+        <input type="text" id="exemplares" placeholder="Número de Exemplares" />
+        <input type="text" id="id" placeholder="ID" />
+        <input type="text" id="livro" placeholder="Livro" required />
+        <input type="text" id="origem" placeholder="Origem" />
+        <input type="text" id="volume" placeholder="Volume" />
 
         <!-- botão com type="button" pra não submeter o form e chamar a função JS -->
         <button type="button" onclick="adicionarLivro()">Salvar Livro</button>

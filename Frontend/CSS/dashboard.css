@@ -315,6 +315,10 @@ form {
        padding: 1.5rem;
        border-radius: 12px;
        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+       margin-left: 360px;
+       gap: 12px;
+       margin-bottom: 70px;
+       margin-top: 20px;
 }
 
 input,
@@ -346,6 +350,10 @@ button {
 
 button:hover {
        background: #02a232;
+}
+
+.cadastro {
+       text-align: center;
 }
 
 /* ==============================
