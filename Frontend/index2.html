@@ -16,7 +16,6 @@
   <aside class="sidebar">
     <header class="sidebar-header">
       <a href="#" class="header-logo"><img src="/Frontend/Logo.png" alt="Logo" /></a>
-      <button class="sidebar-toggler"><span class="material-symbols-rounded">chevron_left</span></button>
     </header>
     <nav class="sidebar-nav">
       <ul class="nav-list primary-nav">
@@ -358,19 +357,65 @@
     }
 
     async function adicionarLivro() {
-      const titulo = document.getElementById("titulo").value;
-      const autor = document.getElementById("autor").value;
-      const ano = document.getElementById("ano").value;
+  try {
+    // Captura os valores do HTML
+    // Certifica-te que os IDs no getElementById batem com o teu HTML
+    const idValue = document.getElementById("id").value;
+    const autorValue = document.getElementById("autor").value;
+    const livroValue = document.getElementById("livro").value;
+    const estanteValue = document.getElementById("estante").value; 
+    const volumeValue = document.getElementById("volume").value;
+    const exemplarValue = document.getElementById("exemplares").value;
+    const cidadeValue = document.getElementById("cidade").value;
+    const editoraValue = document.getElementById("editora").value;
+    const anoValue = document.getElementById("ano").value;
+    const origemValue = document.getElementById("origem").value;
+    const codigoValue = document.getElementById("codigo").value;
+    const dataValue = document.getElementById("dados").value;
+    const adaptadoValue = document.getElementById("AdaptadoPor").value;
 
-      const res = await fetch("http://localhost:3000/livros", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ titulo, autor, ano })
-      });
+    // Monta o objeto exatamente como a API exige
+    const dadosParaEnviar = {
+      "ID": String(idValue),
+      "AUTOR": autorValue,
+      "LIVRO": livroValue,
+      "ESTANTE": estanteValue,
+      "VOLUME": volumeValue || "",
+      "EXEMPLAR": exemplarValue || "",
+      "CIDADE": cidadeValue || "",
+      "EDITORA": editoraValue || "",
+      "ANO": anoValue || "",
+      "ORIGEM": origemValue || "",
+      "CÓDIGO": codigoValue || "",
+      "DATA": dataValue || "",
+      "ADAPTADO POR": adaptadoValue || ""
+    };
 
-      livros = await res.json();
-      mostrarLivros(livros);
+    console.log("Enviando dados:", dadosParaEnviar);
+
+    // Faz a requisição
+    const res = await fetch("https://api-multimeios.onrender.com/livro/post", {
+      method: "POST",
+      headers: { 
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(dadosParaEnviar)
+    });
+
+    if (res.ok) {
+      alert("Livro cadastrado com sucesso!");
+      document.getElementById("formCadastro").reset();
+    } else {
+      const erroServidor = await res.text();
+      console.error("Resposta de erro da API:", erroServidor);
+      alert("A API recusou os dados. Verifica a consola.");
     }
+
+  } catch (error) {
+    console.error("Erro de conexão (CORS ou Rede):", error);
+    alert("Falha ao conectar com a API externa.");
+  }
+}
 
     // ===== NOTIFICAÇÕES =====
     function notificacao(msg) {
