@@ -356,6 +356,26 @@ button:hover {
        text-align: center;
 }
 
+.busca {
+       margin-bottom: 1.5rem;
+       gap: 30px;
+       text-align: center;
+       padding: 20px;
+}
+
+.input-busca {
+       display: flex;
+       gap: 10px;
+       justify-content: center;
+       align-items: center;
+       margin-top: 10px;
+}
+
+.input-busca button {
+       width: auto;
+       padding: 1px 20px;
+}
+
 /* ==============================
    NOTIFICAÇÕES E CONFIGS
 ============================== */
