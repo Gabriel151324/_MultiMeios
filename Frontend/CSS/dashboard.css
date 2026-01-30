@@ -26,6 +26,7 @@ body {
        height: 100vh;
        background: #006f20;
        transition: all 0.4s ease;
+       border-radius: 0 25px 25px 0;
 }
 
 .sidebar.collapsed {
