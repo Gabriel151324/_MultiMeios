@@ -55,81 +55,21 @@ document.querySelectorAll("[data-target]").forEach((link) => {
   });
 });
 
-// ===== FUNÇÕES CSV (Livros) =====
-async function carregarLivrosCSV() {
+// ===== LISTAGENS DE LIVROS =====
+async function atualizarTotalLivrosDashboard() {
   try {
-    const resp = await fetch("/_MultiMeios/Backend/livros.csv");
-    const texto = await resp.text();
+    const res = await fetch("https://api-multimeios.onrender.com/livro/get");
+    const livros = await res.json();
 
-    livros = texto
-      .split("\n")
-      .slice(1)
-      .map((l) => l.split(","))
-      .filter((c) => c.length >= 6)
-      .map((c) => ({
-        titulo: c[0],
-        autor: c[1],
-        ano: c[2],
-        isbn: c[3],
-        categoria: c[4],
-        quantidade: c[5],
-      }));
-
-    atualizarListas();
+    document.getElementById("totalLivrosDashboard").textContent =
+      Array.isArray(livros) ? livros.length : 0;
   } catch (e) {
-    console.error("Erro ao carregar CSV:", e);
+    console.error("Erro ao buscar total de livros:", e);
+    document.getElementById("totalLivrosDashboard").textContent = "—";
   }
 }
 
 // ===== LISTAGENS =====
-let qtdVisivel = 5; // quantos livros aparecem por vez
-
-function listarLivrosFront() {
-  const listaPainel = document.getElementById("listaLivrosPainel");
-  const listaCadastro = document.getElementById("listaLivrosCadastro");
-  const btnVerMais = document.getElementById("verMaisBtn");
-
-  if (!livros.length) {
-    listaCadastro.innerHTML = "<li>Nenhum livro cadastrado ainda.</li>";
-    listaPainel.innerHTML = "<li>Nenhum livro cadastrado ainda.</li>";
-    btnVerMais.style.display = "none";
-    return;
-  }
-
-  // 🔥 Só os visíveis
-  const visiveis = livros.slice(0, qtdVisivel);
-
-  const htmlVisivel = visiveis
-    .map(
-      (l) =>
-        `<li><strong>${l.titulo}</strong> — ${l.autor} (${l.categoria})</li>`,
-    )
-    .join("");
-
-  // Cadastro sempre mostra tudo
-  const htmlCadastro = livros
-    .map(
-      (l) =>
-        `<li><strong>${l.titulo}</strong> — ${l.autor} (${l.categoria})</li>`,
-    )
-    .join("");
-
-  listaCadastro.innerHTML = htmlCadastro;
-  listaPainel.innerHTML = htmlVisivel;
-
-  // Se ainda tem livro escondido → mostra botão
-  if (qtdVisivel < livros.length) {
-    btnVerMais.style.display = "block";
-  } else {
-    btnVerMais.style.display = "none";
-  }
-}
-
-function mostrarMaisLivros() {
-  qtdVisivel += 5; // adiciona +5 livros
-  listarLivrosFront();
-}
-
 function listarReservasFront() {
   const html = reservas.length
     ? reservas
@@ -169,29 +109,7 @@ function atualizarListas() {
     .join("");
 }
 
-// ===== BACKEND (opcional) =====
-async function carregarLivros() {
-  const res = await fetch("http://localhost:3000/livros");
-  livros = await res.json();
-  mostrarLivros(livros);
-}
-
-function mostrarLivros(lista) {
-  const div = document.getElementById("lista-livros");
-  div.innerHTML = "";
-
-  lista.forEach((l) => {
-    div.innerHTML += `
-        <div class="livro-item">
-          <strong>${l.titulo}</strong><br>
-          Autor: ${l.autor}<br>
-          Ano: ${l.ano}
-        </div>
-        <hr>
-        `;
-  });
-}
-
+// ===== FUNÇÕES DE LIVROS =====
 async function adicionarLivro() {
   try {
     // Captura os valores do HTML
@@ -240,6 +158,7 @@ async function adicionarLivro() {
 
     if (res.ok) {
       alert("Livro cadastrado com sucesso!");
+      atualizarTotalLivrosDashboard();
       document.getElementById("formCadastro").reset();
     } else {
       const erroServidor = await res.text();
@@ -436,5 +355,4 @@ document.getElementById("limparTudo").addEventListener("click", () => {
   alert("Todos os dados foram limpos!");
 });
 
-// ===== INITIAL LOAD =====
-carregarLivrosCSV(); // só CSV inicial
+await atualizarTotalLivrosDashboard();
