@@ -55,20 +55,6 @@ document.querySelectorAll("[data-target]").forEach((link) => {
   });
 });
 
-// ===== LISTAGENS DE LIVROS =====
-async function atualizarTotalLivrosDashboard() {
-  try {
-    const res = await fetch("https://api-multimeios.onrender.com/livro/get");
-    const livros = await res.json();
-
-    document.getElementById("totalLivrosDashboard").textContent =
-      Array.isArray(livros) ? livros.length : 0;
-  } catch (e) {
-    console.error("Erro ao buscar total de livros:", e);
-    document.getElementById("totalLivrosDashboard").textContent = "—";
-  }
-}
-
 // ===== LISTAGENS =====
 function listarReservasFront() {
   const html = reservas.length
@@ -354,5 +340,3 @@ document.getElementById("limparTudo").addEventListener("click", () => {
   atualizarListas();
   alert("Todos os dados foram limpos!");
 });
-
-await atualizarTotalLivrosDashboard();
