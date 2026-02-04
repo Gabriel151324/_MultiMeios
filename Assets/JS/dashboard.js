@@ -346,6 +346,21 @@ function mostrarLivroNoFront(livro) {
   `;
 }
 
+// mostrar livro no front
+async function carregarTotalLivros() {
+  try {
+    const response = await fetch("https://api-multimeios.onrender.com/livro/total",);
+    const data = await response.json();
+
+    document.getElementById("totalLivrosDashboard").innerText = data.total;
+  } catch (error) {
+    console.error("Erro ao buscar total de livros");
+  }
+}
+
+// chama ao abrir o dashboard
+carregarTotalLivros();
+
 // Função auxiliar para colocar os dados de volta nos inputs
 function preencherFormulario(dados) {
   // Ajusta os nomes das chaves (LIVRO, AUTOR) conforme a resposta da tua API
