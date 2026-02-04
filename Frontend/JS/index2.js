@@ -181,10 +181,10 @@ function reservarLivro(e) {
 }
 
 // ===== ALUGAR =====
-async function alugarLivro() {
+async function alugarLivro(event) {
   event.preventDefault(); // impede reload do form
 
-  const ALUGADO = ""
+  const ALUGADO = "";
   const nomeAluno = document.getElementById("nomeAlunoAlugar").value;
   const idLivro = document.getElementById("idLivro").value;
   const dataAluguel = document.getElementById("dataReservaAlugar").value;
@@ -192,18 +192,21 @@ async function alugarLivro() {
   // payload no formato JSON
   const aluguel = {
     ALUNO: nomeAluno,
-    "DATA_ALUGUEL": dataAluguel,
-    ALUGADO: "SIM"
+    DATA_ALUGUEL: dataAluguel,
+    ALUGADO: "SIM",
   };
 
   try {
-    const response = await fetch(`https://api-multimeios.onrender.com/livro/alugar/${idLivro}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
+    const response = await fetch(
+      `https://api-multimeios.onrender.com/livro/alugar/${idLivro}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(aluguel),
       },
-      body: JSON.stringify(aluguel)
-    });
+    );
 
     if (!response.ok) {
       throw new Error("Erro ao registrar aluguel");
@@ -215,13 +218,56 @@ async function alugarLivro() {
 
     // opcional: adicionar na lista da tela
     const lista = document.getElementById("listaAluguelSecao");
+
     const li = document.createElement("li");
-    li.textContent = `${nomeAluno} → Livro ID ${idLivro} | Devolução: ${dataDevolucao}`;
+    li.textContent = `${nomeAluno} → Livro ID ${idLivro} `;
+
+    // botão apagar
+    const btnApagar = document.createElement("button");
+    btnApagar.textContent = "🗑️ Apagar";
+    btnApagar.classList.add("delete-btn");
+
+    // evento de apagar
+    btnApagar.addEventListener("click", async () => {
+      const confirmar = confirm("Deseja devolver este livro?");
+      if (!confirmar) return;
+
+      try {
+        const response = await fetch(
+          `https://api-multimeios.onrender.com/livros/alugados/${idLivro}`,
+          {
+            method: "PUT", // ou PATCH, se o backend usar
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              ALUGADO: "não",
+              ALUNO: null,
+              "DATA ALUGUEL": null,
+              "DATA ENTREGA": null,
+            }),
+          },
+        );
+
+        if (!response.ok) {
+          throw new Error("Erro ao atualizar aluguel");
+        }
+
+        // só remove da tela se o banco deu OK
+        li.remove();
+        alert("📘 Livro devolvido com sucesso!");
+      } catch (error) {
+        console.error(error);
+        alert("❌ Não foi possível devolver o livro");
+      }
+    });
+
+    // adiciona tudo
+    li.appendChild(btnApagar);
     lista.appendChild(li);
 
     // limpa o form
     document.getElementById("formAlugar").reset();
-
   } catch (error) {
     console.error(error);
     alert("❌ Não foi possível registrar o aluguel");

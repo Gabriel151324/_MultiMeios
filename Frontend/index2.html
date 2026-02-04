@@ -31,7 +31,7 @@
             </li>
             <li class="nav-item"><a href="#" class="nav-link dropdown-link" data-target="alugar-livro">Alugar Livros</a>
             </li>
-            <li class="nav-item"><a href="#" class="nav-link dropdown-link" data-target="res-livro">Reservar Livros</a>
+            <li class="nav-item"><a href="#" class="nav-link dropdown-link" data-target="devolver-livro">Devolver Livros</a>
             </li>
           </ul>
         </li>
@@ -59,7 +59,7 @@
           <p id="totalLivrosDashboard">0</p>
         </div>
         <div class="card">
-          <h3>Total de Reservas</h3>
+          <h3>Total de Alugados</h3>
           <p id="totalReservasDashboard">0</p>
         </div>
         <div class="card">
@@ -123,7 +123,7 @@
     <section id="alugar-livro">
       <h2>📅 Alugar Livro</h2>
 
-      <form id="formAlugar">
+      <form id="formAlugar" onsubmit="alugarLivro(event)">
         <input type="text" id="nomeAlunoAlugar" placeholder="Nome do Aluno" required>
 
         <input type="text" id="idLivro" placeholder="ID do Livro" required>
@@ -131,28 +131,16 @@
         <label for="dataAluguel">Data do Aluguel:</label>
         <input type="date" id="dataReservaAlugar" required>
 
-        <button type="submit" onclick="alugarLivro()">Registrar Aluguel</button>
+        <button type="submit">Registrar Aluguel</button>
       </form>
+    </section>
+
+    <section id="devolver-livro">
+      <h2>📅 Devolver Livro</h2>
 
       <div class="listagem">
         <h3>📚 Aluguéis Registrados</h3>
         <ul id="listaAluguelSecao"></ul>
-      </div>
-    </section>
-
-    <!-- RESERVAR LIVRO -->
-    <section id="res-livro">
-      <h2>📅 Reservar Livro</h2>
-      <form id="formReservar">
-        <input type="text" id="nomeAlunoRes" placeholder="Nome do Aluno" required />
-        <input type="text" id="tituloReservaRes" placeholder="Título do Livro" required />
-        <input type="date" id="dataReservaRes" required />
-        <button type="submit">Reservar</button>
-      </form>
-
-      <div class="listagem">
-        <h3>👥 Reservas Feitas</h3>
-        <ul id="listaReservasSecao"></ul>
       </div>
     </section>
 
