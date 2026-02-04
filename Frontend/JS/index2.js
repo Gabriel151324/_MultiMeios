@@ -281,6 +281,14 @@ function removerReserva(i) {
   atualizarListas();
 }
 
+
+async function listaAlugueis() {
+  
+
+
+}
+
+
 // ===== BUSCAR =====
 async function buscarLivroPorId() {
   // Obtemos o ID
