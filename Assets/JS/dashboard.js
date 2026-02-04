@@ -349,12 +349,16 @@ function mostrarLivroNoFront(livro) {
 // mostrar livro no front
 async function carregarTotalLivros() {
   try {
-    const response = await fetch("https://api-multimeios.onrender.com/livro/total",);
+    const response = await fetch("https://api-multimeios.onrender.com/");
     const data = await response.json();
 
-    document.getElementById("totalLivrosDashboard").innerText = data.total;
+    const tamanho = data.length;
+
+    document.getElementById("totalLivrosDashboard").innerText = tamanho;
+
   } catch (error) {
-    console.error("Erro ao buscar total de livros");
+    console.error("Erro ao buscar total de livros:", error);
+    document.getElementById("totalLivrosDashboard").innerText = "!";
   }
 }
 
