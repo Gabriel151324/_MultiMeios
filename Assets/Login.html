@@ -5,7 +5,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <script src="https://kit.fontawesome.com/64d58efce2.js" crossorigin="anonymous"></script>
+  <script src="https://kit.fontawesome.com/64d58efce2.js" crossorigin="anonymous">
+    import.meta.env;
+  </script>
 
   <link rel="shortcut icon" href="https://img.icons8.com/color/48/book.png" type="image/x-icon">
   <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
@@ -45,19 +47,27 @@
             Já faz parte da nossa equipe de professores? Então entre e acesse o sistema.
           </p>
         </div>
-        <img src="img/log.svg" class="image" alt="" />
+        <img src="/Assets/IMG/log.svg" class="image" alt="" />
       </div>
     </div>
   </div>
 
   <script>
-    document.getElementById("login-form").addEventListener("submit", function (e) {
-      e.preventDefault(); // impede o reload
+    document.getElementById("login-form").addEventListener("submit", async function (e) {
+      e.preventDefault();
 
-      var username = document.getElementById("login-username").value;
-      var password = document.getElementById("login-password").value;
+      const username = document.getElementById("login-username").value;
+      const password = document.getElementById("login-password").value;
 
-      if (username == "admin" && password == "admin") {
+      const response = await fetch("https://api-multimeios.onrender.com/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password })
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
         window.location.href = "/Assets/Dashboard.html";
       } else {
         alert("Credenciais inválidas.");
