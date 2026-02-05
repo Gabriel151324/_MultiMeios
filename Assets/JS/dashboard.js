@@ -224,7 +224,7 @@ async function alugarLivro(event) {
 
     // botão apagar
     const btnApagar = document.createElement("button");
-    btnApagar.textContent = "🗑️ Apagar";
+    btnApagar.textContent = " Devolver 📘";
     btnApagar.classList.add("delete-btn");
 
     // evento de apagar
