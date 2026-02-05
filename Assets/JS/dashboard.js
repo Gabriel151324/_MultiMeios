@@ -222,45 +222,7 @@ async function alugarLivro(event) {
     const li = document.createElement("li");
     li.textContent = `${nomeAluno} → Livro ID ${idLivro} `;
 
-    // botão apagar
-    const btnApagar = document.createElement("button");
-    btnApagar.textContent = " Devolver 📘";
-    btnApagar.classList.add("delete-btn");
 
-    // evento de apagar
-    btnApagar.addEventListener("click", async () => {
-      const confirmar = confirm("Deseja devolver este livro?");
-      if (!confirmar) return;
-
-      try {
-        const response = await fetch(
-          `https://api-multimeios.onrender.com/livros/alugados/${idLivro}`,
-          {
-            method: "PUT", // ou PATCH, se o backend usar
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              ALUGADO: "não",
-              ALUNO: null,
-              "DATA ALUGUEL": null,
-              "DATA ENTREGA": null,
-            }),
-          },
-        );
-
-        if (!response.ok) {
-          throw new Error("Erro ao atualizar aluguel");
-        }
-
-        // só remove da tela se o banco deu OK
-        li.remove();
-        alert("📘 Livro devolvido com sucesso!");
-      } catch (error) {
-        console.error(error);
-        alert("❌ Não foi possível devolver o livro");
-      }
-    });
 
     // adiciona tudo
     li.appendChild(btnApagar);
@@ -283,9 +245,109 @@ function removerReserva(i) {
 
 
 async function listaAlugueis() {
+  const endpoint = "https://api-multimeios.onrender.com/livros/alugados";
   
+  const contentor = document.getElementById("listaAluguelSecao");
+  
+  const painelAntigo = document.getElementById("listaLivrosPainel");
+  if (painelAntigo) painelAntigo.innerHTML = "";
+
+  try {
+    const resposta = await fetch(endpoint);
+    const dados = await resposta.json();
+    const listaFinal = dados.livros_alugados || [];
+
+    contentor.innerHTML = ""; 
+
+    if (listaFinal.length === 0) {
+      contentor.innerHTML = "<li>Nenhum aluguer registado para devolução.</li>";
+      return;
+    }
+
+    listaFinal.forEach(livro => {
+      const item = document.createElement("li");
+      
+      item.innerHTML = `
+        <div style="
+.btn-devolver {
+  width: 150px; 
+  padding: 10px;
+  cursor: pointer;
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  transition: background 0.3s;
+  text-align: center;
+}
+
+.btn-devolver:hover {
+  background-color: #c0392b;
+}
 
 
+.item-aluguel {
+  display: flex;
+  justify-content: space-between; 
+  align-items: center;
+  min-width: 400px; 
+  background: #fff;
+  border: 1px solid #ddd;
+  margin-bottom: 8px;
+  padding: 15px;
+  border-radius: 8px;
+}">
+          <div>
+            <strong>${livro.LIVRO}</strong><br>
+            <small>Aluno: ${livro.ALUNO} | Id: ${livro.ID} | Ano: ${livro.ANO}</small>
+          </div>
+          <button class="btn-devolver" onclick="devolverLivro('${livro.ID}')">
+            Confirmar Devolução
+          </button>
+        </div>
+      `;
+      
+      contentor.appendChild(item);
+    });
+
+  } catch (erro) {
+    console.error("Erro:", erro);
+    contentor.innerHTML = "<li>Erro ao carregar os alugueres.</li>";
+  }
+}
+window.onload = listaAlugueis;
+
+
+
+
+async function devolverLivro(id_item) {
+  const endpoint = `https://api-multimeios.onrender.com/livro/devolver/${id_item}`;
+
+  try {
+    const resposta = await fetch(endpoint, {
+      method: "POST",
+
+      body: new URLSearchParams({
+        "ALUGADO": "não",
+        "ALUNO": "",
+        "DATA ALUGUEL": "",
+        "DATA ENTREGA": ""
+      })
+    });
+
+    if (resposta.ok) {
+      alert("✅ Livro devolvido!");
+      listaAlugueis();
+    } else {
+      console.error("Erro na resposta:", resposta.status);
+      alert("Erro ao devolver. O servidor respondeu com erro.");
+    }
+
+  } catch (erro) {
+    console.error("Falha na devolução:", erro);
+    alert("Erro de conexão (CORS ou Rede).");
+  }
 }
 
 
