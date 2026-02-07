@@ -257,7 +257,7 @@ async function listaAlugueis() {
     contentor.innerHTML = "";
 
     if (listaFinal.length === 0) {
-      contentor.innerHTML = "<li>Nenhum aluguer registado para devolução.</li>";
+      contentor.innerHTML = "<li class='sem-alugueis'>Nenhum aluguer registado para devolução.</li>";
       return;
     }
 

@@ -424,6 +424,12 @@ button:hover {
        margin-top: 5rem;
 }
 
+.sem-alugueis {
+       text-align: center;
+       font-size: 1.2rem;
+       color: #777;
+}
+
 :root {
        --bg: #f4f4f4;
        --text: #000;
