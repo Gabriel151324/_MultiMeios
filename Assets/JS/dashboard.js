@@ -222,8 +222,6 @@ async function alugarLivro(event) {
     const li = document.createElement("li");
     li.textContent = `${nomeAluno} → Livro ID ${idLivro} `;
 
-
-
     // adiciona tudo
     li.appendChild(btnApagar);
     lista.appendChild(li);
@@ -243,12 +241,11 @@ function removerReserva(i) {
   atualizarListas();
 }
 
-
 async function listaAlugueis() {
   const endpoint = "https://api-multimeios.onrender.com/livros/alugados";
-  
+
   const contentor = document.getElementById("listaAluguelSecao");
-  
+
   const painelAntigo = document.getElementById("listaLivrosPainel");
   if (painelAntigo) painelAntigo.innerHTML = "";
 
@@ -257,16 +254,16 @@ async function listaAlugueis() {
     const dados = await resposta.json();
     const listaFinal = dados.livros_alugados || [];
 
-    contentor.innerHTML = ""; 
+    contentor.innerHTML = "";
 
     if (listaFinal.length === 0) {
       contentor.innerHTML = "<li>Nenhum aluguer registado para devolução.</li>";
       return;
     }
 
-    listaFinal.forEach(livro => {
+    listaFinal.forEach((livro) => {
       const item = document.createElement("li");
-      
+
       item.innerHTML = `
         <div style="
 .btn-devolver {
@@ -307,19 +304,15 @@ async function listaAlugueis() {
           </button>
         </div>
       `;
-      
+
       contentor.appendChild(item);
     });
-
   } catch (erro) {
     console.error("Erro:", erro);
     contentor.innerHTML = "<li>Erro ao carregar os alugueres.</li>";
   }
 }
 window.onload = listaAlugueis;
-
-
-
 
 async function devolverLivro(id_item) {
   const endpoint = `https://api-multimeios.onrender.com/livro/devolver/${id_item}`;
@@ -329,11 +322,11 @@ async function devolverLivro(id_item) {
       method: "POST",
 
       body: new URLSearchParams({
-        "ALUGADO": "não",
-        "ALUNO": "",
+        ALUGADO: "não",
+        ALUNO: "",
         "DATA ALUGUEL": "",
-        "DATA ENTREGA": ""
-      })
+        "DATA ENTREGA": "",
+      }),
     });
 
     if (resposta.ok) {
@@ -343,13 +336,11 @@ async function devolverLivro(id_item) {
       console.error("Erro na resposta:", resposta.status);
       alert("Erro ao devolver. O servidor respondeu com erro.");
     }
-
   } catch (erro) {
     console.error("Falha na devolução:", erro);
     alert("Erro de conexão (CORS ou Rede).");
   }
 }
-
 
 // ===== BUSCAR =====
 async function buscarLivroPorId() {
@@ -417,7 +408,6 @@ async function carregarTotalLivros() {
     const tamanho = data.length;
 
     document.getElementById("totalLivrosDashboard").innerText = tamanho;
-
   } catch (error) {
     console.error("Erro ao buscar total de livros:", error);
     document.getElementById("totalLivrosDashboard").innerText = "!";
