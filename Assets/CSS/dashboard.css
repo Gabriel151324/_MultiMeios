@@ -527,6 +527,10 @@ button:hover {
        margin-top: 1rem;
 }
 
+.listagem h3 {
+       margin-bottom: 0.5rem;
+}
+
 .listagem ul {
        list-style: none;
        padding: 0;

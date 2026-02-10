@@ -1,7 +1,7 @@
 // ===== VARIÁVEIS GLOBAIS =====
 let livros = [];
 let reservas = [];
-let notificacoes = [];
+const notificacoes = [];
 
 // ===== MENU & SIDEBAR =====
 const toggleDropdown = (dropdown, menu, isOpen) => {
@@ -51,6 +51,10 @@ document.querySelectorAll("[data-target]").forEach((link) => {
     sections.forEach((sec) => sec.classList.remove("active"));
     document.getElementById(target).classList.add("active");
 
+    if (target === "devolver-livro") {
+      listaAlugueis();
+    }
+
     atualizarListas();
   });
 });
@@ -88,11 +92,6 @@ function atualizarListas() {
   listarLivrosFront();
   listarReservasFront();
   atualizarDashboard();
-
-  const container = document.getElementById("notificacoesContainer");
-  container.innerHTML = notificacoes
-    .map((msg) => `<div class="notify">${msg}</div>`)
-    .join("");
 }
 
 // ===== FUNÇÕES DE LIVROS =====
@@ -216,16 +215,6 @@ async function alugarLivro(event) {
 
     alert("📚 Aluguel registrado com sucesso!");
 
-    // opcional: adicionar na lista da tela
-    const lista = document.getElementById("listaAluguelSecao");
-
-    const li = document.createElement("li");
-    li.textContent = `${nomeAluno} → Livro ID ${idLivro} `;
-
-    // adiciona tudo
-    li.appendChild(btnApagar);
-    lista.appendChild(li);
-
     // limpa o form
     document.getElementById("formAlugar").reset();
   } catch (error) {
@@ -257,7 +246,8 @@ async function listaAlugueis() {
     contentor.innerHTML = "";
 
     if (listaFinal.length === 0) {
-      contentor.innerHTML = "<li class='sem-alugueis'>Nenhum aluguer registado para devolução.</li>";
+      contentor.innerHTML =
+        "<li class='sem-alugueis'>Nenhum aluguer registado para devolução.</li>";
       return;
     }
 
