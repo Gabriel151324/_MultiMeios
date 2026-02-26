@@ -31,7 +31,8 @@
             </li>
             <li class="nav-item"><a href="#" class="nav-link dropdown-link" data-target="alugar-livro">Alugar Livros</a>
             </li>
-            <li class="nav-item"><a href="#" class="nav-link dropdown-link" data-target="devolver-livro">Devolver Livros</a>
+            <li class="nav-item"><a href="#" class="nav-link dropdown-link" data-target="devolver-livro">Devolver
+                Livros</a>
             </li>
           </ul>
         </li>
@@ -79,30 +80,32 @@
 
     <!-- CADASTRAR LIVRO -->
     <section id="cad-livro" class="cadastro">
-      <h2>📚 Cadastrar Livro</h2>
-      <form id="formCadastro" onsubmit="return false;">
-        <input type="text" id="AdaptadoPor" placeholder="Adaptado por" required />
-        <select name="categoria" id="alugado">
-          <option value="">Alugado?</option>
-          <option>Sim</option>
-          <option>Não</option>
-        </select>
-        <input type="text" id="ano" placeholder="Ano" required />
-        <input type="text" id="autor" placeholder="Autor" required />
-        <input type="text" id="cidade" placeholder="Cidade" />
-        <input type="text" id="codigo" placeholder="Código" />
-        <input type="text" id="dados" placeholder="aaaa/aa/aa" />
-        <input type="text" id="editora" placeholder="Editora" />
-        <input type="text" id="estante" placeholder="Estante" />
-        <input type="text" id="exemplares" placeholder="Número de Exemplares" />
-        <input type="text" id="id" placeholder="ID" />
-        <input type="text" id="livro" placeholder="Livro" required />
-        <input type="text" id="origem" placeholder="Origem" />
-        <input type="text" id="volume" placeholder="Volume" />
+      <div class="formul">
+        <h2>📚 Cadastrar Livro</h2>
+        <form id="formCadastro" onsubmit="return false;">
+          <input type="text" id="AdaptadoPor" placeholder="Adaptado por" required />
+          <select name="categoria" id="alugado">
+            <option value="">Alugado?</option>
+            <option>Sim</option>
+            <option>Não</option>
+          </select>
+          <input type="text" id="ano" placeholder="Ano" required />
+          <input type="text" id="autor" placeholder="Autor" required />
+          <input type="text" id="cidade" placeholder="Cidade" />
+          <input type="text" id="codigo" placeholder="Código" />
+          <input type="text" id="dados" placeholder="aaaa/aa/aa" />
+          <input type="text" id="editora" placeholder="Editora" />
+          <input type="text" id="estante" placeholder="Estante" />
+          <input type="text" id="exemplares" placeholder="Número de Exemplares" />
+          <input type="text" id="id" placeholder="ID" />
+          <input type="text" id="livro" placeholder="Livro" required />
+          <input type="text" id="origem" placeholder="Origem" />
+          <input type="text" id="volume" placeholder="Volume" />
 
-        <!-- botão com type="button" pra não submeter o form e chamar a função JS -->
-        <button type="button" onclick="adicionarLivro()">Salvar Livro</button>
-      </form>
+          <!-- botão com type="button" pra não submeter o form e chamar a função JS -->
+          <button type="button" onclick="adicionarLivro()">Salvar Livro</button>
+        </form>
+      </div>
 
       <div class="listagem">
         <h3>📘 Livros Cadastrados</h3>
@@ -112,21 +115,23 @@
 
     <!-- ALUGAR LIVRO -->
     <section id="alugar-livro" class="cadastro">
-      <h2>📅 Alugar Livro</h2>
+      <div class="formul">
+        <h2>📅 Alugar Livro</h2>
 
-      <form id="formAlugar" onsubmit="alugarLivro(event)">
-        <input type="text" id="nomeAlunoAlugar" placeholder="Nome do Aluno" required>
+        <form id="formAlugar" onsubmit="alugarLivro(event)">
+          <input type="text" id="nomeAlunoAlugar" placeholder="Nome do Aluno" required>
 
-        <input type="text" id="idLivro" placeholder="ID do Livro" required>
+          <input type="text" id="idLivro" placeholder="ID do Livro" required>
 
-        <label for="dataAluguel">Data do Aluguel:</label>
-        <input type="date" id="dataReservaAlugar" required>
+          <label for="dataAluguel">Data do Aluguel:</label>
+          <input type="date" id="dataReservaAlugar" required>
 
-        <button type="submit">Registrar Aluguel</button>
-      </form>
+          <button type="submit">Registrar Aluguel</button>
+        </form>
+      </div>
     </section>
 
-    <!-- DEVOLVER LIVRO --> 
+    <!-- DEVOLVER LIVRO -->
 
     <section id="devolver-livro">
       <h2>📅 Devolver Livro</h2>
@@ -138,7 +143,7 @@
       </div>
     </section>
 
-  <script src="/Assets/JS/dashboard.js"></script>
+    <script src="/Assets/JS/dashboard.js"></script>
 </body>
 
 </html>
