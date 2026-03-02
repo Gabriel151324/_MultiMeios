@@ -287,7 +287,7 @@ async function listaAlugueis() {
 }">
           <div>
             <strong>${livro.LIVRO}</strong><br>
-            <strong>Data de entrega: ${livro["DATA ENTREGA"]}</strong> <br>
+            <strong>Data de devolução: ${livro["DATA ENTREGA"]}</strong> <br>
             <small>Aluno: ${livro.ALUNO} | Id: ${livro.ID} | Ano: ${livro.ANO}</small>
           </div>
           <button class="btn-devolver" onclick="devolverLivro('${livro.ID}')">
