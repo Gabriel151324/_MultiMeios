@@ -242,18 +242,18 @@ async function listaAlugueis() {
     const resposta = await fetch(endpoint);
     const dados = await resposta.json();
     const listaFinal = dados.livros_alugados || [];
-
+    
     contentor.innerHTML = "";
-
+    
     if (listaFinal.length === 0) {
       contentor.innerHTML =
-        "<li class='sem-alugueis'>Nenhum aluguer registado para devolução.</li>";
+      "<li class='sem-alugueis'>Nenhum aluguer registado para devolução.</li>";
       return;
     }
-
+    
     listaFinal.forEach((livro) => {
       const item = document.createElement("li");
-
+      
       item.innerHTML = `
         <div style="
 .btn-devolver {
@@ -287,6 +287,7 @@ async function listaAlugueis() {
 }">
           <div>
             <strong>${livro.LIVRO}</strong><br>
+            <strong>Data de entrega: ${livro["DATA ENTREGA"]}</strong> <br>
             <small>Aluno: ${livro.ALUNO} | Id: ${livro.ID} | Ano: ${livro.ANO}</small>
           </div>
           <button class="btn-devolver" onclick="devolverLivro('${livro.ID}')">
