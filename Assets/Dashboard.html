@@ -87,33 +87,23 @@
       <div class="formul">
         <h2>📚 Cadastrar Livro</h2>
         <form id="formCadastro" onsubmit="return false;">
-          <input type="text" id="livro" placeholder="Título" required />
-          <input type="text" id="autor" placeholder="Autor" required />
-          <input type="text" id="id" placeholder="ID" />
-          <input type="text" id="codigo" placeholder="Código" />
-          <input type="text" id="cidade" placeholder="Cidade" />
-          <input type="text" id="ano" placeholder="Ano" required />
-          <input type="text" id="dados" placeholder="Data de registro(aaaa/mm/dd)" />
-          <input type="text" id="editora" placeholder="Editora" />
-          <input type="text" id="exemplares" placeholder="Número de Exemplares" />
-          <input type="text" id="AdaptadoPor" placeholder="Adaptado por" required />
-          <input type="text" id="estante" placeholder="Estante" />
-          <input type="text" id="origem" placeholder="Origem" />
-          <input type="text" id="volume" placeholder="Volume" />
-          <select name="categoria" id="alugado">
-            <option value="">Alugado?</option>
-            <option>Sim</option>
-            <option>Não</option>
-          </select>
 
-          <!-- botão com type="button" pra não submeter o form e chamar a função JS -->
+          <input type="text" id="registro" placeholder="Nº de Registro" required />
+
+          <input type="text" id="titulo" placeholder="Título do Livro" required />
+
+          <input type="text" id="autor" placeholder="Autor" required />
+
+          <input type="text" id="genero" placeholder="Gênero (Ex: Romance, Ficção)" />
+
+          <input type="text" id="categoria" placeholder="Categoria (Ex: Literatura Brasileira)" />
+
+          <input type="text" id="localizacao" placeholder="Localização (Ex: Estante A - Prateleira 2)" />
+
+          <textarea id="observacao" placeholder="Observações"></textarea>
+
           <button type="button" onclick="adicionarLivro()">Salvar Livro</button>
         </form>
-      </div>
-
-      <div class="listagem">
-        <h3>📘 Livros Cadastrados</h3>
-        <ul id="listaLivrosCadastro"></ul>
       </div>
     </section>
 
